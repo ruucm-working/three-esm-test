@@ -23,31 +23,35 @@ import {
   createElement
 } from "react";
 import { useRef, useState } from "react";
-function ThreeBox({ fiber }) {
-  const { Canvas, useFrame } = fiber;
-  function Box(props) {
-    const mesh = useRef();
-    const [hovered, setHover] = useState(false);
-    const [active, setActive] = useState(false);
-    useFrame((state, delta) => mesh.current.rotation.x += 0.01);
-    return /* @__PURE__ */ createElement("mesh", __spreadProps(__spreadValues({}, props), {
-      ref: mesh,
-      scale: active ? 1.5 : 1,
-      onClick: (event) => setActive(!active),
-      onPointerOver: (event) => setHover(true),
-      onPointerOut: (event) => setHover(false)
-    }), /* @__PURE__ */ createElement("boxGeometry", {
-      args: [1, 1, 1]
-    }), /* @__PURE__ */ createElement("meshStandardMaterial", {
-      color: hovered ? "hotpink" : "orange"
-    }));
-  }
-  return /* @__PURE__ */ createElement(Canvas, null, /* @__PURE__ */ createElement("ambientLight", null), /* @__PURE__ */ createElement("pointLight", {
+import { FiberCanvas, useFiber } from "./useFiber.js";
+function ThreeBox() {
+  const fiber = useFiber();
+  return /* @__PURE__ */ createElement(FiberCanvas, {
+    fiber
+  }, /* @__PURE__ */ createElement("ambientLight", null), /* @__PURE__ */ createElement("pointLight", {
     position: [10, 10, 10]
   }), /* @__PURE__ */ createElement(Box, {
     position: [-1.2, 0, 0]
   }), /* @__PURE__ */ createElement(Box, {
     position: [1.2, 0, 0]
+  }));
+}
+function Box(props) {
+  const { useFrame } = useFiber();
+  const mesh = useRef();
+  const [hovered, setHover] = useState(false);
+  const [active, setActive] = useState(false);
+  useFrame((state, delta) => mesh.current.rotation.x += 0.01);
+  return /* @__PURE__ */ createElement("mesh", __spreadProps(__spreadValues({}, props), {
+    ref: mesh,
+    scale: active ? 1.5 : 1,
+    onClick: (event) => setActive(!active),
+    onPointerOver: (event) => setHover(true),
+    onPointerOut: (event) => setHover(false)
+  }), /* @__PURE__ */ createElement("boxGeometry", {
+    args: [1, 1, 1]
+  }), /* @__PURE__ */ createElement("meshStandardMaterial", {
+    color: hovered ? "hotpink" : "orange"
   }));
 }
 export {
